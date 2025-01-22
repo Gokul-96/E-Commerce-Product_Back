@@ -11,7 +11,7 @@ const userModelSchema = mongoose.Schema(
 
 
 // Psw hash
-userSchema.pre('save', async function (next) {
+userModelSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     next();
   }
