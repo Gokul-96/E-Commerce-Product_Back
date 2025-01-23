@@ -25,10 +25,13 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
+  console.log('Hashed Password:', hashedPassword); // Debugging: Check the hashed password
 
   // Create new user
   const user = new User({ name, email, password: hashedPassword });
   await user.save();
+  
+  console.log('New User Created:', user); // Debugging: Check the user object
 
   // Generate JWT token
   const token = generateToken(user._id);
@@ -42,16 +45,50 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 });
 
-// Login a user
 const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-
-  // Find user by email
-  const user = await User.findOne({ email });
-  if (user && (await bcrypt.compare(password, user.password))) {
+    const { email, password } = req.body;
+  
+    console.log("Login attempt with email:", email);
+  
+    // Trim password to remove extra spaces
+    const trimmedPassword = password.trim();
+    console.log("Trimmed Entered Password:", trimmedPassword);
+  
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      console.log("No user found with that email");
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+  
+    console.log('Stored Hashed Password:', user.password); // Log the stored hashed password
+  
+    // Manual password comparison (for debugging purposes)
+    // const bcrypt = require('bcryptjs');
+    const storedHashedPassword = '$2a$10$sF8KBKG5o/ZZLGiAj./4fO4zYEz/xvD0oXI0WUydzdDoIhyrlOEQe';
+    const enteredPassword = 'cytrusst2025111';
+    
+    bcrypt.compare(enteredPassword, storedHashedPassword)
+      .then(isMatch => {
+        console.log('Password match:', isMatch); // Should print true if it matches
+      })
+      .catch(err => {
+        console.error('Error comparing passwords:', err);
+      });
+  
+    // Compare the entered password with the hashed password
+    const isPasswordCorrect = await bcrypt.compare(trimmedPassword, user.password);
+    console.log('Entered Password:', trimmedPassword);
+    console.log('Password Comparison Result:', isPasswordCorrect);
+  
+    if (!isPasswordCorrect) {
+      console.log("Incorrect password");
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+  
     // Generate JWT token
     const token = generateToken(user._id);
-
+  
     // Respond with user details and token
     return res.status(200).json({
       _id: user._id,
@@ -59,10 +96,7 @@ const loginUser = asyncHandler(async (req, res) => {
       email: user.email,
       token,
     });
-  } else {
-    return res.status(400).json({ message: 'Invalid email or password' });
-  }
-});
+  });
 
 module.exports = {
   registerUser,
