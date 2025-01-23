@@ -2,20 +2,20 @@ const Product = require('../models/Product');
 
 // Create a new product
 const createProduct = async (req, res) => {
-    const { name, description, price, image } = req.body; // Extract the product data from the request body
+    const { title, image , price} = req.body; // Extract product data from the request body
   
     try {
       const newProduct = new Product({
-        name,
-        description,
-        price,
-        image
+        title,
+        image,
+        price
+        
       });
   
       const savedProduct = await newProduct.save(); // Save the product to the database
-      res.status(201).json(savedProduct); // Respond with the created product
+      res.status(201).json(savedProduct);
     } catch (err) {
-      res.status(500).json({ message: err.message }); // Handle any errors
+      res.status(500).json({ message: err.message }); 
     }
   };
   

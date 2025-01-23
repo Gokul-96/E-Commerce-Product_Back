@@ -1,19 +1,17 @@
 const express = require('express');
-
+const { authenticateUser } = require('../middleware/auth');
 const { createOrder, getUserOrders, updateOrderStatus } = require('../controllers/orderController');
 
-const { authMiddleware } = require('../middleware/auth');
-
 const router = express.Router();
-console.log(createOrder, getUserOrders, updateOrderStatus); 
 
-router.post('/create', authMiddleware,createOrder); // Create a new order
+// 1. Create an order
+router.post('/', authenticateUser, createOrder);
 
-console.log('createOrder:', createOrder);
-router.get('/', authMiddleware,getUserOrders); // Get users orders 
-console.log('getUserOrders:', getUserOrders);
-router.put( '/status', authMiddleware,  updateOrderStatus); // Update status using this
+// 2. Get all orders for the authenticated user
+router.get('/', authenticateUser, getUserOrders);
 
-console.log('getUserOrders:', getUserOrders);
-console.log('updateOrderStatus:', updateOrderStatus);
+// 3. Update order status (Admin only)
+router.put('/status', authenticateUser, updateOrderStatus);
+
 module.exports = router;
+

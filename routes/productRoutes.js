@@ -3,10 +3,11 @@ const { getProducts, getProductById ,createProduct} = require('../controllers/pr
 
 const router = express.Router();
 
+// create new product 
 router.post('/', createProduct);
-// 1. Get all products
+// Get all products
 router.get('/', getProducts); 
-// 2.Get product details by ID
+// Get product details by ID
 router.get('/:id', getProductById); 
 
 module.exports = router;

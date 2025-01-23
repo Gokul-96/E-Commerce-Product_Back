@@ -1,68 +1,50 @@
 const Order = require('../models/Order');
 
-// Create new order
-
+// 1. Create a new order
 const createOrder = async (req, res) => {
-    console.log('createOrder handler called');
+  const { items, totalAmount } = req.body;
+
   try {
-    const { orderItems, priceTotally } = req.body;
-
-    if (!orderItems || orderItems.length === 0) {
-      return res.status(400).json({ message: 'no ordered  items found' });
-    }
-
     const order = new Order({
-      user: req.user.id, 
-      orderItems,
-      priceTotally,
+      userId: req.user._id,
+      items,
+      totalAmount,
     });
 
-    const createdOrder = await order.save();
-    res.status(201).json(createdOrder);
+    const savedOrder = await order.save();
+    res.status(201).json(savedOrder);
   } catch (error) {
-    res.status(500).json({ message: 'failed to create order', error });
+    res.status(500).json({ message: 'Failed to create order', error });
   }
 };
 
-// Get all orders for user
-
-
+// 2. View all orders for the authenticated user
 const getUserOrders = async (req, res) => {
-    console.log('getUserOrders handler called');
   try {
-    const orders = await Order.find({ user: req.user.id }).populate('orderItems.product', 'title price image');
+    const orders = await Order.find({ userId: req.user._id }).populate('items.productId', 'name price');
     res.status(200).json(orders);
   } catch (error) {
-    res.status(500).json({ message: 'failed to retrieve orders', error });
+    res.status(500).json({ message: 'Failed to fetch orders', error });
   }
 };
 
-// Update order status
-
+// 3. Update the order status (Admin Only)
 const updateOrderStatus = async (req, res) => {
-    console.log('updateOrderStatus handler called');
-  try {
-    const { orderId, status } = req.body;
+  const { orderId, status } = req.body;
 
+  try {
     const order = await Order.findById(orderId);
+
     if (!order) {
-      return res.status(404).json({ message: 'order not found' });
+      return res.status(404).json({ message: 'Order not found' });
     }
 
     order.status = status;
-    const updatedOrder = await order.save();
-
-    res.status(200).json(updatedOrder);
+    await order.save();
+    res.status(200).json(order);
   } catch (error) {
-    res.status(500).json({ message: 'failed to update order', error });
+    res.status(500).json({ message: 'Failed to update order status', error });
   }
 };
 
-
-module.exports = {
-  createOrder,
-  getUserOrders,
-  updateOrderStatus,
-};
-
-
+module.exports = { createOrder, getUserOrders, updateOrderStatus };
