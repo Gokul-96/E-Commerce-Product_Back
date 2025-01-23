@@ -4,16 +4,19 @@ const orderRoutes = require('./routes/orderRoutes');
 const productRoutes= require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
 const connectDB = require('./config/db');
+const cors = require('cors');
+let app = express();
 
+app.use(cors()); 
 
 dotenv.config();
-let app = express();
+
 app.use(express.json());   //middleware 
 
 //routes
-app.use ('orders',orderRoutes )
-app.use  ('products', productRoutes);
-app.use  (' users', userRoutes);
+app.use ('/api/orders',orderRoutes )
+app.use  ('/api/products', productRoutes);
+app.use  ('/api/users', userRoutes);
 
 
 connectDB();

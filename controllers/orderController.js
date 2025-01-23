@@ -3,6 +3,7 @@ const Order = require('../models/Order');
 // Create new order
 
 const createOrder = async (req, res) => {
+    console.log('createOrder handler called');
   try {
     const { orderItems, priceTotally } = req.body;
 
@@ -27,6 +28,7 @@ const createOrder = async (req, res) => {
 
 
 const getUserOrders = async (req, res) => {
+    console.log('getUserOrders handler called');
   try {
     const orders = await Order.find({ user: req.user.id }).populate('orderItems.product', 'title price image');
     res.status(200).json(orders);
@@ -38,6 +40,7 @@ const getUserOrders = async (req, res) => {
 // Update order status
 
 const updateOrderStatus = async (req, res) => {
+    console.log('updateOrderStatus handler called');
   try {
     const { orderId, status } = req.body;
 
