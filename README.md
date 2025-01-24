@@ -28,5 +28,7 @@ environmental variable - Managed using dotenv
 //Run development server
 node server.js
 
+Deployment link: https://e-commerce-product-back.onrender.com
+
 Server will be running on http://localhost:8000
 
