@@ -14,6 +14,7 @@ app.use(cors());
 dotenv.config();
 
 app.use(express.json());   //middleware 
+app.use(express.urlencoded({ extended: true }));
 
 //routes
 app.use  ('/api/products', productRoutes);

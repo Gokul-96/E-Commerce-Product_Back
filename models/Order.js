@@ -12,7 +12,7 @@ const orderModelSchema = mongoose.Schema(
       },
     ],
 
-    PriceTotally: {type:Number, required: true },
+    priceTotally: {type:Number, required: true },
     status: {type:String, default: 'Pending' },
   },{ timestamps: true }
 );

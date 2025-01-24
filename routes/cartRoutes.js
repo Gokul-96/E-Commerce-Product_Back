@@ -5,15 +5,15 @@ const router = express.Router();
 
 const {
   addToCart,
-  removeFromCart,
-  updateCart,
+  removeCartItem,
+  updateCartItem
 } = require('../controllers/cartController');
 
 
 router.post('/add', authenticateUser, addToCart);
 
-router.delete('/remove', authenticateUser, removeFromCart);
+router.delete('/item/:itemId', authenticateUser, removeCartItem);
 
-router.put('/update', authenticateUser, updateCart);
+router.put('/item/:itemId', authenticateUser, updateCartItem);
 
 module.exports = router;
